@@ -40,6 +40,9 @@ public:
     bool templateAllFields;
     bool autoPull;
     bool autoPush;
+    QHash<QString, QString> profiles;
+    QString profile;
+    bool checkConfig();
 
 private:
     QScopedPointer<QSettings> settings;

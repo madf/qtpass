@@ -38,7 +38,6 @@ enum actionType { GPG, GIT, EDIT, DELETE, GPG_INTERNAL, PWGEN };
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
-    bool checkConfig();
     void setApp(SingleApplication* app);
     void setText(QString);
     QStringList getSecretKeys();
@@ -91,8 +90,6 @@ private:
     bool freshStart;
     QDialog *keygen;
     QString currentDir;
-    QHash<QString, QString> profiles;
-    QString profile;
     bool startupPhase;
     trayIcon *tray;
     void updateText();
@@ -102,7 +99,6 @@ private:
     QString getDir(const QModelIndex &, bool);
     QString getFile(const QModelIndex &, bool);
     void setPassword(QString, bool, bool);
-    QSettings &getSettings();
     QList<UserInfo> listKeys(QString keystring = "", bool secret = false);
     QStringList getRecipientList(QString for_file);
     QString getRecipientString(QString for_file, QString separator = " ", int *count = NULL);

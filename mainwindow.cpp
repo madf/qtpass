@@ -43,12 +43,15 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->statusBar->showMessage(tr("Welcome to QtPass %1").arg(VERSION), 2000);
     freshStart = true;
     startupPhase = true;
-    if (!checkConfig()) {
+    settings = new Settings();
+
+    if (!settings->checkConfig()) {
         // no working config
         QApplication::quit();
     }
     QtPass = NULL;
     QTimer::singleShot(10, this, SLOT(focusInput()));
+    settings = new Settings();
 
 }
 
@@ -72,21 +75,6 @@ MainWindow::~MainWindow()
 #endif
 }
 
-QSettings &MainWindow::getSettings() {
-    if (!settings) {
-        QString portable_ini = QCoreApplication::applicationDirPath() + QDir::separator() + "qtpass.ini";
-        //qDebug() << "Settings file: " + portable_ini;
-        if (QFile(portable_ini).exists()) {
-           // qDebug() << "Settings file exists, loading it in";
-            settings.reset(new QSettings(portable_ini, QSettings::IniFormat));
-        } else {
-            //qDebug() << "Settings file does not exist, use defaults";
-            settings.reset(new QSettings("IJHack", "QtPass"));
-        }
-    }
-    return *settings;
-}
-
 void MainWindow::mountWebDav() {
 #ifdef Q_OS_WIN
     char dst[20] = {0};
@@ -108,10 +96,10 @@ void MainWindow::mountWebDav() {
         ui->textBrowser->setText(tr("Failed to connect WebDAV:\n") + message + " (0x" + QString::number(r, 16) + ")");
     }
 #else
-    fusedav.start("fusedav -o nonempty -u \"" + cfg->webDavUser + "\" " + cfg->webDavUrl + " \"" + cfg->passStore + '"');
+    fusedav.start("fusedav -o nonempty -u \"" + settings->webDavUser + "\" " + settings->webDavUrl + " \"" + settings->passStore + '"');
     fusedav.waitForStarted();
     if (fusedav.state() == QProcess::Running) {
-        QString pwd = cfg->webDavPassword;
+        QString pwd = settings->webDavPassword;
         bool ok = true;
         if (pwd.isEmpty()) {
             pwd = QInputDialog::getText(this, tr("QtPass WebDAV password"),
@@ -140,217 +128,7 @@ void MainWindow::mountWebDav() {
 #endif
 }
 
-/**
- * @brief MainWindow::checkConfig
- */
-bool MainWindow::checkConfig() {
 
-    QSettings &settings(getSettings());
-
-    QString version = settings.value("version").toString();
-
-    if (freshStart) {
-        settings.beginGroup( "mainwindow" );
-        restoreGeometry(settings.value( "geometry", saveGeometry() ).toByteArray());
-        restoreState(settings.value( "savestate", saveState() ).toByteArray());
-        move(settings.value( "pos", pos() ).toPoint());
-        resize(settings.value( "size", size() ).toSize());
-        QList<int> splitter = ui->splitter->sizes();
-        int left = settings.value("splitterLeft", splitter[0]).toInt();
-        int right= settings.value("splitterRight", splitter[1]).toInt();
-        if (left > 0 || right > 0) {
-            splitter[0] = left;
-            splitter[1] = right;
-            ui->splitter->setSizes(splitter);
-        }
-        if ( settings.value( "maximized", isMaximized() ).toBool() )
-            showMaximized();
-        settings.endGroup();
-    }
-
-    usePass = (settings.value("usePass") == "true");
-
-    useClipboard = (settings.value("useClipboard") == "true");
-    useAutoclear = (settings.value("useAutoclear") == "true");
-    autoclearSeconds = settings.value("autoclearSeconds").toInt();
-    useAutoclearPanel = (settings.value("useAutoclearPanel") == "true");
-    autoclearPanelSeconds = settings.value("autoclearPanelSeconds").toInt();
-    hidePassword = (settings.value("hidePassword") == "true");
-    hideContent = (settings.value("hideContent") == "true");
-    addGPGId = (settings.value("addGPGId") != "false");
-
-    passStore = settings.value("passStore").toString();
-    if (passStore.isEmpty()) {
-        passStore = Util::findPasswordStore();
-        settings.setValue("passStore", passStore);
-    }
-    passStore = Util::normalizeFolderPath(passStore);
-
-    passExecutable = settings.value("passExecutable").toString();
-    if (passExecutable.isEmpty()) {
-        passExecutable = Util::findBinaryInPath("pass");
-    }
-
-    gitExecutable = settings.value("gitExecutable").toString();
-    if (gitExecutable.isEmpty()) {
-        gitExecutable = Util::findBinaryInPath("git");
-    }
-
-    gpgExecutable = settings.value("gpgExecutable").toString();
-    if (gpgExecutable.isEmpty()) {
-        gpgExecutable = Util::findBinaryInPath("gpg2");
-    }
-
-    pwgenExecutable = settings.value("pwgenExecutable").toString();
-    if (pwgenExecutable.isEmpty()) {
-        pwgenExecutable = Util::findBinaryInPath("pwgen");
-    }
-
-    gpgHome = settings.value("gpgHome").toString();
-
-    useWebDav = (settings.value("useWebDav") == "true");
-    webDavUrl = settings.value("webDavUrl").toString();
-    webDavUser = settings.value("webDavUser").toString();
-    webDavPassword = settings.value("webDavPassword").toString();
-
-    profile = settings.value("profile").toString();
-    settings.beginGroup("profiles");
-    QStringList keys = settings.childKeys();
-    foreach (QString key, keys) {
-         profiles[key] = settings.value(key).toString();
-    }
-    settings.endGroup();
-
-    useGit = (settings.value("useGit") == "true");
-    usePwgen = (settings.value("usePwgen") == "true");
-    useSymbols = (settings.value("useSymbols") == "true");
-    passwordLength = settings.value("passwordLength").toInt();
-    passwordChars = settings.value("passwordChars").toString();
-
-    useTrayIcon = settings.value("useTrayIcon").toBool();
-    hideOnClose = settings.value("hideOnClose").toBool();
-    startMinimized = settings.value("startMinimized").toBool();
-
-    autoPull = settings.value("autoPull").toBool();
-    autoPush = settings.value("autoPush").toBool();
-
-    if (useTrayIcon && tray == NULL) {
-        initTrayIcon();
-        if (freshStart && startMinimized) {
-            // since we are still in constructor, can't directly hide
-            QTimer::singleShot(10, this, SLOT(hide()));
-        }
-    } else if (!useTrayIcon && tray != NULL) {
-        destroyTrayIcon();
-    }
-
-    passTemplate = settings.value("passTemplate").toString();
-    useTemplate = settings.value("useTemplate").toBool();
-    templateAllFields = settings.value("templateAllFields").toBool();
-
-    //qDebug() << version;
-
-    // Config updates
-    if (version.isEmpty()) {
-        qDebug() << "assuming fresh install";
-        if (autoclearSeconds < 5) {
-            autoclearSeconds = 10;
-        }
-        if (autoclearPanelSeconds < 5) {
-            autoclearPanelSeconds = 10;
-        }
-        passwordLength = 16;
-        passwordChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890~!@#$%^&*()_-+={}[]|:;<>,.?";
-        if (!pwgenExecutable.isEmpty()) {
-            usePwgen = true;
-        } else {
-            usePwgen = false;
-        }
-    } else {
-//        QStringList ver = version.split(".");
-//        qDebug() << ver;
-//        if (ver[0] == "0" && ver[1] == "8") {
-//            // upgrade to 0.9
-//        }
-        if (passwordChars.isEmpty()) {
-            passwordChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890~!@#$%^&*()_-+={}[]|:;<>,.?";
-        }
-    }
-    settings.setValue("version", VERSION);
-
-    if (Util::checkConfig(passStore, passExecutable, gpgExecutable)) {
-        config();
-        if (freshStart && Util::checkConfig(passStore, passExecutable, gpgExecutable)) {
-            return false;
-        }
-    }
-
-    freshStart = false;
-
-    // TODO: this needs to be before we try to access the store,
-    // but it would be better to do it after the Window is shown,
-    // as the long delay it can cause is irritating otherwise.
-    if (useWebDav) {
-        mountWebDav();
-    }
-
-    model.setNameFilters(QStringList() << "*.gpg");
-    model.setNameFilterDisables(false);
-
-    proxyModel.setSourceModel(&model);
-    proxyModel.setModelAndStore(&model, passStore);
-    selectionModel.reset(new QItemSelectionModel(&proxyModel));
-    model.fetchMore(model.setRootPath(passStore));
-    model.sort(0, Qt::AscendingOrder);
-
-    ui->treeView->setModel(&proxyModel);
-    ui->treeView->setRootIndex(proxyModel.mapFromSource(model.setRootPath(passStore)));
-    ui->treeView->setColumnHidden(1, true);
-    ui->treeView->setColumnHidden(2, true);
-    ui->treeView->setColumnHidden(3, true);
-    ui->treeView->setHeaderHidden(true);
-    ui->treeView->setIndentation(15);
-    ui->treeView->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
-    ui->treeView->setContextMenuPolicy(Qt::CustomContextMenu);
-    connect(ui->treeView, SIGNAL(customContextMenuRequested(const QPoint&)),
-        this, SLOT(showContextMenu(const QPoint&)));
-
-    ui->textBrowser->setOpenExternalLinks(true);
-
-    updateProfileBox();
-
-    env = QProcess::systemEnvironment();
-    if (!gpgHome.isEmpty()) {
-        QDir absHome(gpgHome);
-        absHome.makeAbsolute();
-        env << "GNUPGHOME=" + absHome.path();
-    }
-#ifdef __APPLE__
-    // If it exists, add the gpgtools to PATH
-    if (QFile("/usr/local/MacGPG2/bin").exists()) {
-        env.replaceInStrings("PATH=", "PATH=/usr/local/MacGPG2/bin:");
-    }
-    // Add missing /usr/local/bin
-    if (env.filter("/usr/local/bin").isEmpty()) {
-        env.replaceInStrings("PATH=", "PATH=/usr/local/bin:");
-    }
-#endif
-    //QMessageBox::information(this, "env", env.join("\n"));
-
-    updateEnv();
-
-    if (!useGit || (gitExecutable.isEmpty() && passExecutable.isEmpty()))
-    {
-        ui->pushButton->hide();
-        ui->updateButton->hide();
-    } else {
-        ui->pushButton->show();
-        ui->updateButton->show();
-    }
-
-    startupPhase = false;
-    return true;
-}
 
 /**
  * @brief MainWindow::config
@@ -360,36 +138,8 @@ void MainWindow::config() {
     d->setModal(true);
 
     // Automatically default to pass if it's available
-    usePass = freshStart ? QFile(passExecutable).exists() : usePass;
+    settings->usePass = freshStart ? QFile(settings->passExecutable).exists() : settings->usePass;
 
-    d->setPassPath(passExecutable);
-    d->setGitPath(gitExecutable);
-    d->setGpgPath(gpgExecutable);
-    d->setStorePath(passStore);
-    d->usePass(usePass);
-    d->useClipboard(useClipboard);
-    d->useAutoclear(useAutoclear);
-    d->setAutoclear(autoclearSeconds);
-    d->useAutoclearPanel(useAutoclearPanel);
-    d->setAutoclearPanel(autoclearPanelSeconds);
-    d->hidePassword(hidePassword);
-    d->hideContent(hideContent);
-    d->addGPGId(addGPGId);
-    d->useTrayIcon(useTrayIcon);
-    d->hideOnClose(hideOnClose);
-    d->startMinimized(startMinimized);
-    d->setProfiles(profiles, profile);
-    d->useGit(useGit);
-    d->setPwgenPath(pwgenExecutable);
-    d->usePwgen(usePwgen);
-    d->useSymbols(useSymbols);
-    d->setPasswordLength(passwordLength);
-    d->setPasswordChars(passwordChars);
-    d->useTemplate(useTemplate);
-    d->setTemplate(passTemplate);
-    d->templateAllFields(templateAllFields);
-    d->autoPull(autoPull);
-    d->autoPush(autoPush);
     if (startupPhase) {
         d->wizard(); // does shit
     }

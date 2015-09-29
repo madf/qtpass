@@ -1,11 +1,13 @@
-#ifndef CONFIG_H
-#define CONFIG_H
+#ifndef SETTINGS_H
+#define SETTINGS_H
 
+#include <QSettings>
+#include <QScopedPointer>
 
-class Config
+class Settings
 {
 public:
-    Config();
+    Settings();
     bool usePass;
     bool useClipboard;
     bool useAutoclear;
@@ -40,8 +42,8 @@ public:
     bool autoPush;
 
 private:
-
+    QScopedPointer<QSettings> settings;
 
 };
 
-#endif // CONFIG_H
+#endif // SETTINGS_H

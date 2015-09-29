@@ -6,7 +6,7 @@
 #include "mainwindow.h"
 #include <QTableWidgetItem>
 #include <QCloseEvent>
-#include "config.h"
+#include "settings.h"
 #include "process.h"
 
 namespace Ui {
@@ -54,7 +54,7 @@ private:
     // Qt 5.4.1 when QApplication::exec was not yet called
     void criticalMessage(const QString &title, const QString &text);
     MainWindow *mainWindow;
-    Config *config;
+    Settings *settings;
 };
 
 #endif // DIALOG_H

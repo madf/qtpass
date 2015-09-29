@@ -32,7 +32,7 @@ SOURCES   += main.cpp\
              trayicon.cpp \
     passworddialog.cpp \
     process.cpp \
-    config.cpp
+    settings.cpp
 
 HEADERS   += mainwindow.h \
              dialog.h \
@@ -44,7 +44,7 @@ HEADERS   += mainwindow.h \
              trayicon.h \
     passworddialog.h \
     process.h \
-    config.h
+    settings.h
 
 FORMS     += mainwindow.ui \
              dialog.ui \

@@ -10,7 +10,7 @@
 #include "storemodel.h"
 #include "trayicon.h"
 #include "process.h"
-#include "config.h"
+#include "settings.h"
 #if SINGLE_APP
 #include "singleapplication.h"
 #else
@@ -77,7 +77,6 @@ private slots:
 
 private:
     QApplication *QtPass;
-    QScopedPointer<QSettings> settings;
     QScopedPointer<Ui::MainWindow> ui;
     QFileSystemModel model;
     StoreModel proxyModel;
@@ -115,7 +114,7 @@ private:
     bool removeDir(const QString & dirName);
     void waitFor(int);
     Process *process;
-    Config *cfg;
+    Settings *settings;
 };
 
 #endif // MAINWINDOW_H

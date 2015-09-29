@@ -5,7 +5,7 @@
 #include "keygendialog.h"
 #include "passworddialog.h"
 #include "util.h"
-#include "config.h"
+#include "settings.h"
 #
 #include <QClipboard>
 #include <QDebug>
@@ -35,7 +35,7 @@ MainWindow::MainWindow(QWidget *parent) :
     keygen(NULL),
     tray(NULL)
 {
-    cfg = new Config();
+    settings = new Settings();
     ui->setupUi(this);
     enableUiElements(true);
     wrapperRunning = false;

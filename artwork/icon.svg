@@ -3,8 +3,8 @@
 <title>Padlocked heart.</title>
 <g transform="translate(0,1136) scale(1,-1)">
 <g stroke-width="360" fill="none">
-<path stroke="#808080" d="M-630,0V1320A630,630 0 0,0 630,1320V0"/>
-<path stroke="#A0A0A0" stroke-width="180" d="M-630,0V1320A630,630 0 0,0 630,1320V0"/>
+<path stroke="#c0c0c0" d="M-630,0V1320A630,630 0 0,0 630,1320V0"/>
+<path stroke="#c0c0c0" stroke-width="180" d="M-630,0V1320A630,630 0 0,0 630,1320V0"/>
 <path stroke="#c0c0c0" d="M-630,0V1320"/><path stroke="#c0c0c0" d="M630,1320V0"/>
 <path stroke="#c0c0c0" d="M-630,1320A630,630 0 0,0 630,1320"/></g>
 <path fill="#19528a" d="M0,-1000L-1000,0A635.6743,635.6743 0 1,0 0,767.327

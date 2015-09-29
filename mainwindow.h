@@ -9,6 +9,8 @@
 #include <QSettings>
 #include "storemodel.h"
 #include "trayicon.h"
+#include "process.h"
+#include "config.h"
 #if SINGLE_APP
 #include "singleapplication.h"
 #else
@@ -36,10 +38,6 @@ enum actionType { GPG, GIT, EDIT, DELETE, GPG_INTERNAL, PWGEN };
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
-    void setPassExecutable(QString);
-    void setGitExecutable(QString);
-    void setGpgExecutable(QString);
-    QString getGpgExecutable();
     bool checkConfig();
     void setApp(SingleApplication* app);
     void setText(QString);
@@ -84,26 +82,6 @@ private:
     QFileSystemModel model;
     StoreModel proxyModel;
     QScopedPointer<QItemSelectionModel> selectionModel;
-    QScopedPointer<QProcess> process;
-    bool usePass;
-    bool useClipboard;
-    bool useAutoclear;
-    bool useAutoclearPanel;
-    bool hidePassword;
-    bool hideContent;
-    bool addGPGId;
-    int autoclearSeconds;
-    int autoclearPanelSeconds;
-    QString passStore;
-    QString passExecutable;
-    QString gitExecutable;
-    QString gpgExecutable;
-    QString pwgenExecutable;
-    QString gpgHome;
-    bool useWebDav;
-    QString webDavUrl;
-    QString webDavUser;
-    QString webDavPassword;
     QProcess fusedav;
     QString clippedPass;
     actionType currentAction;
@@ -118,22 +96,7 @@ private:
     QString profile;
     bool startupPhase;
     trayIcon *tray;
-    bool useTrayIcon;
-    bool hideOnClose;
-    bool startMinimized;
-    bool useGit;
-    bool usePwgen;
-    bool useSymbols;
-    int passwordLength;
-    QString passwordChars;
-    bool useTemplate;
-    QString passTemplate;
-    bool templateAllFields;
-    bool autoPull;
-    bool autoPush;
     void updateText();
-    void executePass(QString, QString = QString());
-    void executeWrapper(QString, QString, QString = QString());
     void enableUiElements(bool);
     void selectFirstFile();
     QModelIndex firstFile(QModelIndex parentIndex);
@@ -151,6 +114,8 @@ private:
     void destroyTrayIcon();
     bool removeDir(const QString & dirName);
     void waitFor(int);
+    Process *process;
+    Config *cfg;
 };
 
 #endif // MAINWINDOW_H

@@ -6,6 +6,8 @@
 #include "mainwindow.h"
 #include <QTableWidgetItem>
 #include <QCloseEvent>
+#include "config.h"
+#include "process.h"
 
 namespace Ui {
 
@@ -21,64 +23,6 @@ class Dialog : public QDialog
 public:
     explicit Dialog(MainWindow *parent);
     ~Dialog();
-    void setPassPath(QString);
-    void setGitPath(QString);
-    void setGpgPath(QString);
-    void setStorePath(QString);
-    void setProfiles(QHash<QString, QString>, QString);
-    void usePass(bool);
-    void useClipboard(bool);
-    void useAutoclear(bool);
-    void setAutoclear(int);
-    void useAutoclearPanel(bool);
-    void setAutoclearPanel(int);
-    void hidePassword(bool);
-    void hideContent(bool);
-    void addGPGId(bool);
-    QString getPassPath();
-    QString getGitPath();
-    QString getGpgPath();
-    QString getStorePath();
-    QHash<QString,QString> getProfiles();
-    bool usePass();
-    bool useClipboard();
-    bool useAutoclear();
-    int getAutoclear();
-    bool useAutoclearPanel();
-    int getAutoclearPanel();
-    bool hidePassword();
-    bool hideContent();
-    bool addGPGId();
-    void wizard();
-    void genKey(QString, QDialog *);
-    bool useTrayIcon();
-    bool hideOnClose();
-    bool startMinimized();
-    void useTrayIcon(bool);
-    void hideOnClose(bool);
-    void startMinimized(bool);
-    void useGit(bool);
-    bool useGit();
-    QString getPwgenPath();
-    void setPwgenPath(QString);
-    void usePwgen(bool);
-    void useSymbols(bool);
-    void setPasswordLength(int);
-    void setPasswordChars(QString);
-    bool usePwgen();
-    bool useSymbols();
-    int getPasswordLength();
-    QString getPasswordChars();
-    bool useTemplate();
-    void useTemplate(bool);
-    QString getTemplate();
-    void setTemplate(QString);
-    void templateAllFields(bool);
-    bool templateAllFields();
-    bool autoPull();
-    void autoPull(bool);
-    bool autoPush();
-    void autoPush(bool);
 
 protected:
     void closeEvent(QCloseEvent *event);
@@ -110,6 +54,7 @@ private:
     // Qt 5.4.1 when QApplication::exec was not yet called
     void criticalMessage(const QString &title, const QString &text);
     MainWindow *mainWindow;
+    Config *config;
 };
 
 #endif // DIALOG_H

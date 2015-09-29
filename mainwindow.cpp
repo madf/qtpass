@@ -5,6 +5,8 @@
 #include "keygendialog.h"
 #include "passworddialog.h"
 #include "util.h"
+#include "config.h"
+#
 #include <QClipboard>
 #include <QDebug>
 #include <QInputDialog>
@@ -29,14 +31,11 @@
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
-    process(new QProcess(this)),
     fusedav(this),
     keygen(NULL),
     tray(NULL)
 {
-//    connect(process.data(), SIGNAL(readyReadStandardOutput()), this, SLOT(readyRead()));
-    connect(process.data(), SIGNAL(error(QProcess::ProcessError)), this, SLOT(processError(QProcess::ProcessError)));
-    connect(process.data(), SIGNAL(finished(int, QProcess::ExitStatus)), this, SLOT(processFinished(int, QProcess::ExitStatus)));
+    cfg = new Config();
     ui->setupUi(this);
     enableUiElements(true);
     wrapperRunning = false;
@@ -109,10 +108,10 @@ void MainWindow::mountWebDav() {
         ui->textBrowser->setText(tr("Failed to connect WebDAV:\n") + message + " (0x" + QString::number(r, 16) + ")");
     }
 #else
-    fusedav.start("fusedav -o nonempty -u \"" + webDavUser + "\" " + webDavUrl + " \"" + passStore + '"');
+    fusedav.start("fusedav -o nonempty -u \"" + cfg->webDavUser + "\" " + cfg->webDavUrl + " \"" + cfg->passStore + '"');
     fusedav.waitForStarted();
     if (fusedav.state() == QProcess::Running) {
-        QString pwd = webDavPassword;
+        QString pwd = cfg->webDavPassword;
         bool ok = true;
         if (pwd.isEmpty()) {
             pwd = QInputDialog::getText(this, tr("QtPass WebDAV password"),

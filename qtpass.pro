@@ -30,7 +30,9 @@ SOURCES   += main.cpp\
              keygendialog.cpp \
              progressindicator.cpp \
              trayicon.cpp \
-    passworddialog.cpp
+    passworddialog.cpp \
+    process.cpp \
+    config.cpp
 
 HEADERS   += mainwindow.h \
              dialog.h \
@@ -40,7 +42,9 @@ HEADERS   += mainwindow.h \
              keygendialog.h \
              progressindicator.h \
              trayicon.h \
-    passworddialog.h
+    passworddialog.h \
+    process.h \
+    config.h
 
 FORMS     += mainwindow.ui \
              dialog.ui \

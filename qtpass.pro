@@ -13,7 +13,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 macx {
     TARGET = QtPass
-    QMAKE_MAC_SDK = macosx10.11
+    QMAKE_MAC_SDK = macosx
 } else {
     TARGET = qtpass
 }
@@ -98,7 +98,7 @@ OTHER_FILES += LICENSE \
 isEmpty(PREFIX) {
  PREFIX = /usr/local/bin
 }
-target.path = $$PREFIX/
+target.path = $$(PREFIX)/
 
 INSTALLS    += target
 

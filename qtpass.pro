@@ -7,7 +7,7 @@
 #
 #-------------------------------------------------
 
-VERSION    = 1.0.3
+VERSION    = 1.0.4
 TEMPLATE   = app
 QT        += core gui
 
@@ -22,7 +22,7 @@ macx {
 
 SOURCES   += main.cpp\
              mainwindow.cpp \
-             dialog.cpp \
+             configdialog.cpp \
              storemodel.cpp \
              util.cpp \
              usersdialog.cpp \ 
@@ -34,7 +34,7 @@ SOURCES   += main.cpp\
     settings.cpp
 
 HEADERS   += mainwindow.h \
-             dialog.h \
+             configdialog.h \
              storemodel.h \
              util.h \
              usersdialog.h \
@@ -46,7 +46,7 @@ HEADERS   += mainwindow.h \
     settings.h
 
 FORMS     += mainwindow.ui \
-             dialog.ui \
+             configdialog.ui \
              usersdialog.ui \ 
              keygendialog.ui \
     passworddialog.ui
@@ -71,7 +71,8 @@ TRANSLATIONS    +=  localization/localization_nl_NL.ts \
                     localization/localization_pl_PL.ts \
                     localization/localization_ru_RU.ts \
                     localization/localization_he_IL.ts \
-                    localization/localization_zh_CN.ts
+                    localization/localization_zh_CN.ts \
+                    localization/localization_ar_MA.ts
 
 CODECFORSRC     = UTF-8
 CODECFORTR      = UTF-8
@@ -89,8 +90,9 @@ win32 {
 } else:macx {
     ICON = artwork/icon.icns
     QMAKE_INFO_PLIST = Info.plist
+} else:bsd {
+    LIBS += -L/usr/local/lib
 }
-
 OTHER_FILES += LICENSE \
                README.md
 

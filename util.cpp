@@ -7,6 +7,7 @@
 #ifdef Q_OS_WIN
 #include <windows.h>
 #endif
+#include <sys/time.h>
 QProcessEnvironment Util::_env;
 bool Util::_envInitialised;
 
@@ -44,7 +45,11 @@ QString Util::findPasswordStore()
     if (_env.contains("PASSWORD_STORE_DIR")) {
         path = _env.value("PASSWORD_STORE_DIR");
     } else {
+#ifdef Q_OS_WIN
+        path = QDir::homePath() + QDir::separator() + "password-store" + QDir::separator();
+#else
         path = QDir::homePath() + QDir::separator() + ".password-store" + QDir::separator();
+#endif
     }
     return Util::normalizeFolderPath(path);
 }

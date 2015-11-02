@@ -30,5 +30,5 @@ notifications:
     channels:
       - "chat.freenode.net#IJhack"
     on_success: change
-    on_failure: always
+    on_failure: change
 

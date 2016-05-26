@@ -1,13 +1,7 @@
 #ifndef MAINWINDOW_H_
 #define MAINWINDOW_H_
 
-#include <QMainWindow>
-#include <QTreeView>
-#include <QFileSystemModel>
-#include <QProcess>
-#include <QQueue>
-#include <QSettings>
-#include <QTimer>
+#include "settings.h"
 #include "storemodel.h"
 #include "trayicon.h"
 #if SINGLE_APP
@@ -15,6 +9,14 @@
 #else
 #define SingleApplication QApplication
 #endif
+
+#include <QMainWindow>
+#include <QTreeView>
+#include <QFileSystemModel>
+#include <QProcess>
+#include <QQueue>
+#include <QSettings>
+#include <QTimer>
 
 namespace Ui {
 class MainWindow;
@@ -91,12 +93,15 @@ class MainWindow : public QMainWindow {
   void copyPasswordToClipboard();
 
  private:
+  QScopedPointer<Ui::MainWindow> ui;
+  QScopedPointer<QSettings> settings;
+  QtPass::Settings m_settings;
+
+  bool m_firstRun;
+
   QAction *actionAddPassword;
   QAction *actionAddFolder;
 
-  QApplication *QtPass;
-  QScopedPointer<QSettings> settings;
-  QScopedPointer<Ui::MainWindow> ui;
   QFileSystemModel model;
   StoreModel proxyModel;
   QScopedPointer<QItemSelectionModel> selectionModel;
@@ -162,7 +167,6 @@ class MainWindow : public QMainWindow {
   QString getDir(const QModelIndex &, bool);
   QString getFile(const QModelIndex &, bool);
   void setPassword(QString, bool, bool);
-  QSettings &getSettings();
   QList<UserInfo> listKeys(QString keystring = "", bool secret = false);
   QStringList getRecipientList(QString for_file);
   QString getRecipientString(QString for_file, QString separator = " ",

@@ -26,11 +26,12 @@ SOURCES   += main.cpp\
              configdialog.cpp \
              storemodel.cpp \
              util.cpp \
-             usersdialog.cpp \ 
+             usersdialog.cpp \
              keygendialog.cpp \
              trayicon.cpp \
              passworddialog.cpp \
-             qprogressindicator.cpp
+             qprogressindicator.cpp \
+             settings.cpp
 
 HEADERS   += mainwindow.h \
              configdialog.h \
@@ -40,11 +41,12 @@ HEADERS   += mainwindow.h \
              keygendialog.h \
              trayicon.h \
              passworddialog.h \
-             qprogressindicator.h
+             qprogressindicator.h \
+             settings.h
 
 FORMS     += mainwindow.ui \
              configdialog.ui \
-             usersdialog.ui \ 
+             usersdialog.ui \
              keygendialog.ui \
              passworddialog.ui
 

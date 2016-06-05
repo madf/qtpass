@@ -3,6 +3,35 @@
 #include <QApplication>
 #include <QTranslator>
 
+/*! \mainpage QtPass
+ *
+ * \section intro_sec Introduction
+ *
+ * QtPass is a multi-platform GUI for pass, the standard unix password manager.
+ *
+ * \section install_sec Installation
+ *
+ * \subsection dependencies Dependencies
+ *
+ * - QtPass requires Qt 4.8 or later, preferably Qt5.5 or later.
+ * - The Linguist package is required to compile the translations.
+ * - For use of the fallback icons the SVG library is required.
+ *
+ * At runtime the only real dependency is gpg2 but to make the most of it, you'll need git and pass too.
+ *
+ * \subsection source From source
+ *
+ * On most *nix systems all you need is:
+ *
+ * `qmake && make && make install`
+ */
+
+/**
+ * @brief main
+ * @param argc
+ * @param argv
+ * @return
+ */
 int main(int argc, char *argv[]) {
   // check for stupid apple psid or whatever flag
   QString text = "";

@@ -35,7 +35,7 @@ class MainWindow : public QMainWindow {
 
   enum actionType { GPG, GIT, EDIT, DELETE, GPG_INTERNAL, PWGEN };
 
- public:
+public:
   enum clipBoardType {
     CLIPBOARD_NEVER = 0,
     CLIPBOARD_ALWAYS = 1,
@@ -58,14 +58,13 @@ class MainWindow : public QMainWindow {
   void config();
   void executePassGitInit();
 
- protected:
+protected:
   void closeEvent(QCloseEvent *event);
-  void keyPressEvent(QKeyEvent * event);
+  void keyPressEvent(QKeyEvent *event);
   void changeEvent(QEvent *event);
   bool eventFilter(QObject *obj, QEvent *event);
 
-
- private slots:
+private slots:
   void on_updateButton_clicked();
   void on_pushButton_clicked();
   void on_treeView_clicked(const QModelIndex &index);
@@ -92,7 +91,7 @@ class MainWindow : public QMainWindow {
   void focusInput();
   void copyPasswordToClipboard();
 
- private:
+private:
   QScopedPointer<Ui::MainWindow> ui;
   QScopedPointer<QSettings> settings;
   QtPass::Settings m_settings;
@@ -183,4 +182,4 @@ class MainWindow : public QMainWindow {
   const QString &getClippedPassword();
 };
 
-#endif  // MAINWINDOW_H_
+#endif // MAINWINDOW_H_
